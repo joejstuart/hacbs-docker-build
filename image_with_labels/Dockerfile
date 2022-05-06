@@ -1,3 +1,3 @@
-FROM quay.io/jitesoft/alpine:latest
+FROM quay.io/jstuart/alpine:latest
 
 LABEL version="1.0"
