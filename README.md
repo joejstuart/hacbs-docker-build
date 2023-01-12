@@ -2,4 +2,3 @@
 
 # release authorization support
 
-# ec support
