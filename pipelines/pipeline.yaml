@@ -12,8 +12,13 @@ spec:
     type: string
   - name: image-reference
     type: string
-  - name: context
+  - name: DOCKERFILE
     type: string
+  results:
+  - name: IMAGE_URL
+    value: $(tasks.build-push.results.IMAGE_URL)
+  - name: IMAGE_DIGEST
+    value: $(tasks.build-push.results.IMAGE_DIGEST)
   workspaces:
   - name: shared-data
   - name: docker-credentials
@@ -30,7 +35,7 @@ spec:
   - name: build-push
     runAfter: ["fetch-source"]
     taskRef:
-      name: kaniko
+      name: buildah
     workspaces:
     - name: source
       workspace: shared-data
@@ -39,5 +44,5 @@ spec:
     params:
     - name: IMAGE
       value: $(params.image-reference)
-    - name: CONTEXT
-      value: $(params.context)
+    - name: DOCKERFILE
+      value: $(params.DOCKERFILE)

@@ -26,5 +26,5 @@ spec:
     value: https://github.com/joejstuart/hacbs-docker-build.git
   - name: image-reference
     value: quay.io/jstuart/hacbs-docker-build
-  - name: context
-    value: ./image_with_labels
+  - name: DOCKERFILE
+    value: ./image_with_labels/Dockerfile
