@@ -1,0 +1,68 @@
+
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: clone-build-push-run-
+spec:
+  pipelineSpec:
+    params:
+    - name: repo-url
+      type: string
+    - name: image-reference
+      type: string
+    - name: DOCKERFILE
+      type: string
+    results:
+    - name: IMAGE_URL
+      value: $(tasks.build-push.results.IMAGE_URL)
+    - name: IMAGE_DIGEST
+      value: $(tasks.build-push.results.IMAGE_DIGEST)
+    workspaces:
+    - name: shared-data
+    - name: docker-credentials
+    tasks:
+    - name: fetch-source
+      taskRef:
+        name: git-clone
+      workspaces:
+      - name: output
+        workspace: shared-data
+      params:
+      - name: url
+        value: $(params.repo-url)
+    - name: build-push
+      runAfter: ["fetch-source"]
+      taskRef:
+        name: buildah
+      workspaces:
+      - name: source
+        workspace: shared-data
+      - name: dockerconfig
+        workspace: docker-credentials
+      params:
+      - name: IMAGE
+        value: $(params.image-reference)
+      - name: DOCKERFILE
+        value: $(params.DOCKERFILE)
+  podTemplate:
+    securityContext:
+      fsGroup: 65532
+  workspaces:
+  - name: docker-credentials
+    secret:
+      secretName: docker-credentials
+  - name: shared-data
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+  params:
+  - name: repo-url
+    value: https://github.com/joejstuart/hacbs-docker-build.git
+  - name: image-reference
+    value: quay.io/jstuart/hacbs-docker-build
+  - name: DOCKERFILE
+    value: ./image_with_labels/Dockerfile
