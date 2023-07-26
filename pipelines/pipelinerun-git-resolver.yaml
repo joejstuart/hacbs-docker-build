@@ -1,0 +1,37 @@
+
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: clone-build-push-run-
+spec:
+  pipelineRef:
+    resolver: git
+    params:
+    - name: url
+      value: https://github.com/joejstuart/hacbs-docker-build.git
+    - name: revision
+      value: main
+    - name: pathInRepo
+      value: pipelines/pipeline.yaml
+  podTemplate:
+    securityContext:
+      fsGroup: 65532
+  workspaces:
+  - name: docker-credentials
+    secret:
+      secretName: docker-credentials
+  - name: shared-data
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+  params:
+  - name: repo-url
+    value: https://github.com/joejstuart/hacbs-docker-build.git
+  - name: image-reference
+    value: quay.io/jstuart/hacbs-docker-build
+  - name: DOCKERFILE
+    value: ./image_with_labels/Dockerfile
