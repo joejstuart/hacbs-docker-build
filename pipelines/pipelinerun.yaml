@@ -9,6 +9,8 @@ spec:
   podTemplate:
     securityContext:
       fsGroup: 65532
+    imagePullSecrets:
+    - name: docker-chains
   workspaces:
   - name: docker-credentials
     secret:

@@ -1,3 +1,6 @@
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+go run -modfile "${ROOT}/tools/go.mod" sigs.k8s.io/kustomize/kustomize/v5 build --enable-exec --enable-alpha-plugins --enable-helm --helm-command=${ROOT}/hack/helm.sh
+
 # create pvc
 kubectl create -f pvc.yaml -n work
 
