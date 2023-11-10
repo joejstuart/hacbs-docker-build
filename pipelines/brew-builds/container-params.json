@@ -1,0 +1,6 @@
+{
+  "type": "container",
+  "source-ref": "cpaas-tp-1.7-rhel-7",
+  "source-repo": "containers/cpaas-test-brew-container",
+  "target": "cpaas-tp-1.7-rhel-7-containers-candidate"
+}

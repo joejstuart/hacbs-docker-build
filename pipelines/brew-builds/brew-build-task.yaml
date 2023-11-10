@@ -1,0 +1,57 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: brew-v1
+  labels:
+    agogos.redhat.com/extension: brew-v1
+spec:
+  workspaces:
+    - name: output
+  params:
+    - name: params
+      type: string
+  results:
+    - name: data
+      description: A JSON formatted result
+    - name: brew_ARTIFACT_URI
+      description: the URI of the brew build
+    - name: brew_ARTIFACT_DIGEST
+      description: the digest of the brew build
+  volumes:
+    - name: keytab
+      secret:
+        secretName: brew-v1-keytab
+    - name: config
+      configMap:
+        name: brew-v1-config
+        optional: true
+  steps:
+    - name: execute
+      image: quay.io/jstuart/brew-builder:latest
+      imagePullPolicy: Always  # TODO: Temporarily since we use a tag
+      command: [python, /home/builder/builder/cli.py]  # Specified explicitly to overcome issue described here: https://github.com/tektoncd/pipeline/issues/1171
+      args:
+        - --workspace=$(workspaces.output.path)
+        - --results=$(results.data.path)
+        - --config=/config/brew.yml
+        - --params=$(params.params)
+      env:
+        - name: KERBEROS_PRINCIPAL
+          valueFrom:
+            secretKeyRef:
+              name: brew-v1-keytab
+              key: principal
+      volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: keytab
+          mountPath: /kerberos
+    - name: echo
+      image: alpine
+      script: |
+        #!/bin/sh
+        echo "pkgs.devel.redhat.com/git/rpms/cpaas-test-brew-rpm#cpaas-tp-1.7-rhel-7" > $(results.brew_ARTIFACT_URI.path)
+        echo "sha256:05f95b26ed10668b7183c1e2da98610e91372fa9f510046d4ce5812addad86b7" > $(results.brew_ARTIFACT_DIGEST.path)
+
+

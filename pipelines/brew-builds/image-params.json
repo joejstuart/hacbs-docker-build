@@ -1,0 +1,27 @@
+{
+  "type": "image",
+  "source-repo": "rpms/cpaas-test-brew-image-builds",
+  "source-ref": "cpaas-tp-4.30-rhel-8",
+  "target": "cpaas-tp-4.30-rhel-8-candidate",
+  "name": "cpaas-test-input-image-x86_64",
+  "version": "4.30",
+  "arch": "x86_64",
+  "install-tree-url": "http://download.eng.bos.redhat.com/rhel-8/rel-eng/RHEL-8/latest-RHEL-8.4.0/compose/BaseOS/x86_64/os/",
+  "repos": [
+    "http://rhsm-pulp.corp.redhat.com/content/dist/rhel8/8/x86_64/baseos/os/",
+    "http://rhsm-pulp.corp.redhat.com/content/dist/rhel8/8/x86_64/appstream/os/"
+  ],
+  "ksversion": "F26",
+  "kickstart": "input_image.ks",
+  "distro": "Fedora-36",
+  "formats": [
+    "qcow2"
+  ],
+  "disk-size": 40,
+  "factory-parameters": [
+    {
+      "parameter": "generate_icicle",
+      "value": "False"
+    }
+  ]
+}

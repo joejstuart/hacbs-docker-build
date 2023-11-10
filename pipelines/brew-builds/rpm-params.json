@@ -1,0 +1,7 @@
+{
+  "type": "rpm",
+  "source-repo": "rpms/cpaas-test-brew-rpm",
+  "source-ref": "cpaas-tp-1.7-rhel-7",
+  "target": "cpaas-tp-1.7-rhel-7-candidate",
+  "brew": {"flags": ["--scratch", "--random"]}
+}
